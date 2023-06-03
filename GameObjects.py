@@ -66,8 +66,8 @@ class Player(PhysicsObject):
                     self.dead = True
     
     def fire_bullet(self):
-        bullet = Bullet(x=self.x,y=self.y)
-        bullet.vx = 100
+        bullet = Bullet(x=self.x,y=self.y,batch=self.batch)
+        bullet.vx = 500
         self.new_objects.append(bullet)
 
     def update(self, dt, objects):
@@ -127,4 +127,4 @@ class Bullet(PhysicsObject):
     def __init__(self, *args, **kwargs):
         super().__init__(img = bullet_image, *args, **kwargs)
 
-        self.scale = 10
+        self.scale = 0.05

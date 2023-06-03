@@ -4,7 +4,7 @@
 
 import random
 import pyglet
-from GameObjects import PhysicsObject, Player, Enemy
+from GameObjects import PhysicsObject, Player, Enemy, Bullet
 from GameResources import *
 
 game_window = pyglet.window.Window(800,600)
@@ -39,7 +39,6 @@ def update(dt):
     for obj in reversed(game_objects):
 
         obj.update(dt,[other_obj for other_obj in game_objects if other_obj is not obj])
-
 
         game_objects.extend(obj.new_objects)
         obj.new_objects = []
