@@ -94,26 +94,29 @@ class Player(PhysicsObject):
 
         self.energy_bar.text = "Energy: " + str(int(self.energy))
 
-        self.vx = 0
-        self.vy = 0
+        #self.vx = 0
+        #self.vy = 0
+
+        self.vx *= 0.9
+        self.vy *= 0.9
 
         if self.key_handler[key.W]:
-            self.vy += 1.0
+            self.vy += 20
         if self.key_handler[key.S]:
-            self.vy -= 1.0
+            self.vy -= 20
         if self.key_handler[key.D]:
-            self.vx += 1.0
+            self.vx += 20
         if self.key_handler[key.A]:
-            self.vx -= 1.0
+            self.vx -= 20
 
 
         v = math.sqrt(self.vx**2 + self.vy**2)
-        if v > 1.0:
-            self.vx = self.vx/v
-            self.vy = self.vy/v
+        if v > 300.0:
+            self.vx = 300*self.vx/v
+            self.vy = 300*self.vy/v
 
-        self.vx *= 200
-        self.vy *= 200
+        #self.vx *= 200
+        #self.vy *= 200
 
         super(Player, self).update(dt, objects)
 
