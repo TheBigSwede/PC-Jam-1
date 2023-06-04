@@ -56,7 +56,7 @@ def update(dt):
 
     for obj in list(game_objects):
         if obj.dead == True:
-            if isinstance(obj,Enemy):
+            if isinstance(obj,Enemy) and obj.died_to_bullet == True:
                 score += 100
                 score_label.text = "Score: " + str(score)
             obj.delete()
@@ -74,7 +74,7 @@ def update(dt):
 
 def spawn_enemy(dt):
     global score
-    if random.random() > 1/(1.1+score/20000):
+    if random.random() > 1/(1.05+score/50000):
         x_coord = game_window.size[0]-50
         y_coord = random.random()*(game_window.size[1]-100)+50
         if random.random() < 0.1:
@@ -82,13 +82,13 @@ def spawn_enemy(dt):
         else:
             new_enemy = Enemy(x=x_coord,y=y_coord,batch=main_batch)
 
-        new_enemy.vx = -50    
+        new_enemy.vx = -100    
         game_objects.append(new_enemy)
 
 
 if __name__ == '__main__':
     pyglet.clock.schedule_interval(update,1/60.0)
-    pyglet.clock.schedule_interval(spawn_enemy,0.1)
+    pyglet.clock.schedule_interval(spawn_enemy,0.05)
     pyglet.app.run()
     
 

@@ -22,6 +22,9 @@ class PhysicsObject(pyglet.sprite.Sprite):
 
         self.new_objects = []
 
+
+        self.died_to_bullet = False
+
     def calculate_distance(self,obj):
         return math.sqrt((self.x-obj.x)**2 + (self.y-obj.y)**2)
 
@@ -50,6 +53,8 @@ class PhysicsObject(pyglet.sprite.Sprite):
         for obj in self.colliding_with:
             if type(obj) in self.collides_with:
                 self.dead = True
+                if isinstance(obj,Bullet):
+                    self.died_to_bullet = True
 
     def update(self,dt,objects):
         self.x += self.vx*dt
@@ -159,7 +164,13 @@ class Bullet(PhysicsObject):
 
         self.radius = 8
 
-        self.collides_with = [Enemy]
+        self.collides_with = [Enemy,TrackingEnemy]
+
+    def check_collisions(self, objects):
+        for obj in objects:
+            if self.calculate_distance(obj) <= self.radius+obj.radius:
+                self.colliding_with.append(obj)
+                obj.colliding_with.append(self)
 
     def check_bounds(self):
         min_x = self.radius
@@ -182,7 +193,7 @@ class TrackingEnemy(Enemy):
         super().__init__(*args, **kwargs)
 
         self.vx = -50
-        self.walk_speed = 50
+        self.walk_speed = 100
         self.charge_speed = 200
 
         self.target = target
