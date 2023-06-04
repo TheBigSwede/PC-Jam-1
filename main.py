@@ -73,17 +73,19 @@ def update(dt):
             
 
 def spawn_enemy(dt):
-    x_coord = game_window.size[0]-50
-    y_coord = random.random()*(game_window.size[1]-100)+50
-    new_enemy = Enemy(x=x_coord,y=y_coord,batch=main_batch)
+    global score
+    if random.random() > 1/(1.1+score/20000):
+        x_coord = game_window.size[0]-50
+        y_coord = random.random()*(game_window.size[1]-100)+50
+        new_enemy = Enemy(x=x_coord,y=y_coord,batch=main_batch)
 
-    new_enemy.vx = -50    
-    game_objects.append(new_enemy)
+        new_enemy.vx = -50    
+        game_objects.append(new_enemy)
 
 
 if __name__ == '__main__':
     pyglet.clock.schedule_interval(update,1/60.0)
-    pyglet.clock.schedule_interval(spawn_enemy,2)
+    pyglet.clock.schedule_interval(spawn_enemy,0.1)
     pyglet.app.run()
     
 
