@@ -71,14 +71,28 @@ class Player(PhysicsObject):
         self.key_handler = key.KeyStateHandler()
 
         self.collides_with = [Enemy]
+
+        self.energy = 100
+        self.bullet_cost = 10
+        self.energy_bar = pyglet.text.Label(text="Energy: " + str(self.energy),x=10,y=10,batch=self.batch)
     
     def fire_bullet(self):
-        bullet = Bullet(x=self.x,y=self.y,batch=self.batch)
-        bullet.vx = 500
-        self.new_objects.append(bullet)
+        if self.energy >= self.bullet_cost:
+            self.energy -= self.bullet_cost
+
+            bullet = Bullet(x=self.x,y=self.y,batch=self.batch)
+            bullet.vx = 500
+            self.new_objects.append(bullet) 
 
     def update(self, dt, objects):
-        
+
+
+        self.energy += 0.3333333333
+        if self.energy > 100:
+            self.energy = 100
+
+        self.energy_bar.text = "Energy: " + str(int(self.energy))
+
         self.vx = 0
         self.vy = 0
 
