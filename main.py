@@ -13,7 +13,8 @@ game_window = pyglet.window.Window(800,600)
 main_batch = pyglet.graphics.Batch()
 
 #Score Label
-score_label = pyglet.text.Label(text="Score: 0",x=10,y=575,batch=main_batch)
+score = 0
+score_label = pyglet.text.Label(text="Score: " + str(score),x=10,y=575,batch=main_batch)
 
 #Create Player
 player = Player(x=400,y=300,batch=main_batch)
@@ -32,10 +33,11 @@ game_objects = [player]
 @game_window.event
 def on_draw():
     game_window.clear()
-
+    score_label.draw()
     main_batch.draw()
 
 def update(dt):
+    global score
     objects_to_add = []
     for obj in game_objects:
 
@@ -46,6 +48,9 @@ def update(dt):
 
     for obj in list(game_objects):
         if obj.dead == True:
+            if type(obj) == Enemy:
+                score += 100
+                score_label.text = "Score: " + str(score)
             obj.delete()
             game_objects.remove(obj)
 
