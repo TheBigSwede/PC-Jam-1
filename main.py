@@ -80,9 +80,11 @@ def spawn_enemy(dt):
     new_enemy.vx = -50    
     game_objects.append(new_enemy)
 
-pyglet.clock.schedule_interval(update,1/60.0)
-pyglet.clock.schedule_interval(spawn_enemy,2)
-pyglet.app.run()
+
+if __name__ == '__main__':
+    pyglet.clock.schedule_interval(update,1/60.0)
+    pyglet.clock.schedule_interval(spawn_enemy,2)
+    pyglet.app.run()
 
 
 # %%

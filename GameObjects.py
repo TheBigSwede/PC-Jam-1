@@ -65,7 +65,7 @@ class Player(PhysicsObject):
     def __init__(self, *args, **kwargs):
         super().__init__(img=player_image, *args, **kwargs)
 
-        self.scale = 0.1
+        self.scale = 2.0
         self.radius = 25
 
         self.key_handler = key.KeyStateHandler()
@@ -137,7 +137,7 @@ class Bullet(PhysicsObject):
     def __init__(self, *args, **kwargs):
         super().__init__(img = bullet_image, *args, **kwargs)
 
-        self.scale = 0.05
+        self.scale = 1.0
 
         self.collides_with = [Enemy]
 

@@ -8,8 +8,8 @@ pyglet.resource.reindex()
 
 
 #Load Sprites
-player_image = pyglet.resource.image("Nasa.png")
-bullet_image = pyglet.resource.image("bullet.png")
+player_image = pyglet.resource.image("Nasa_Sprite.png")
+bullet_image = pyglet.resource.image("Nasa_Bullet_Sprite.png")
 enemy_image = pyglet.resource.image("enemy.png")
 background_image = pyglet.resource.image("background.png")
 
