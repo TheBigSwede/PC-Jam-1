@@ -15,6 +15,9 @@ class PhysicsObject(pyglet.sprite.Sprite):
 
         self.radius = 0.0
 
+        self.colliding_with = []
+        self.collides_with = []
+
         self.dead = False
 
         self.new_objects = []
@@ -38,7 +41,15 @@ class PhysicsObject(pyglet.sprite.Sprite):
             self.y = max_y
 
     def check_collisions(self, objects):
-        return
+        for obj in objects:
+            if self.calculate_distance(obj) <= self.radius+obj.radius:
+                self.colliding_with.append(obj)
+                obj.colliding_with.append(self)
+
+    def check_death(self):
+        for obj in self.colliding_with:
+            if type(obj) in self.collides_with:
+                self.dead = True
 
     def update(self,dt,objects):
         self.x += self.vx*dt
@@ -46,6 +57,8 @@ class PhysicsObject(pyglet.sprite.Sprite):
 
         self.check_bounds()
         self.check_collisions(objects)
+        self.check_death()
+        self.colliding_with = []
 
 class Player(PhysicsObject):
 
@@ -58,12 +71,6 @@ class Player(PhysicsObject):
         self.key_handler = key.KeyStateHandler()
 
         self.collides_with = [Enemy]
-
-    def check_collisions(self, objects):
-        for obj in objects:
-            if type(obj) in self.collides_with:
-                if self.calculate_distance(obj) < self.radius+obj.radius:
-                    self.dead = True
     
     def fire_bullet(self):
         bullet = Bullet(x=self.x,y=self.y,batch=self.batch)
@@ -105,7 +112,10 @@ class Enemy(PhysicsObject):
         super().__init__(img=enemy_image, *args, **kwargs)
 
         self.scale = 0.2
-        self.radius = 10
+        self.radius = 25
+
+        self.collides_with = [Bullet]
+
 
     def check_bounds(self):
         min_x = self.radius
@@ -128,3 +138,20 @@ class Bullet(PhysicsObject):
         super().__init__(img = bullet_image, *args, **kwargs)
 
         self.scale = 0.05
+
+        self.collides_with = [Enemy]
+
+    def check_bounds(self):
+        min_x = self.radius
+        min_y = self.radius
+        max_x = 800-self.radius
+        max_y = 600-self.radius
+
+        if self.x < min_x:
+            self.dead = True
+        if self.y < min_y:
+            self.dead = True
+        if self.x > max_x:
+            self.dead = True
+        if self.y > max_y:
+            self.dead = True

@@ -36,17 +36,20 @@ def on_draw():
     main_batch.draw()
 
 def update(dt):
-    for obj in reversed(game_objects):
+    objects_to_add = []
+    for obj in game_objects:
 
         obj.update(dt,[other_obj for other_obj in game_objects if other_obj is not obj])
 
-        game_objects.extend(obj.new_objects)
+        objects_to_add.extend(obj.new_objects)
         obj.new_objects = []
 
-
+    for obj in list(game_objects):
         if obj.dead == True:
             obj.delete()
             game_objects.remove(obj)
+
+    game_objects.extend(objects_to_add)
 
             
 
