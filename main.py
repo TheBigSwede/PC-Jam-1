@@ -4,7 +4,7 @@
 
 import random
 import pyglet
-from GameObjects import PhysicsObject, Player, Enemy, Bullet
+from GameObjects import PhysicsObject, Player, Enemy, Bullet, TrackingEnemy
 from GameResources import *
 
 game_window = pyglet.window.Window(800,600)
@@ -56,7 +56,7 @@ def update(dt):
 
     for obj in list(game_objects):
         if obj.dead == True:
-            if type(obj) == Enemy:
+            if isinstance(obj,Enemy):
                 score += 100
                 score_label.text = "Score: " + str(score)
             obj.delete()
@@ -77,7 +77,10 @@ def spawn_enemy(dt):
     if random.random() > 1/(1.1+score/20000):
         x_coord = game_window.size[0]-50
         y_coord = random.random()*(game_window.size[1]-100)+50
-        new_enemy = Enemy(x=x_coord,y=y_coord,batch=main_batch)
+        if random.random() < 0.1:
+            new_enemy = TrackingEnemy(target=player,x=x_coord,y=y_coord,batch=main_batch)
+        else:
+            new_enemy = Enemy(x=x_coord,y=y_coord,batch=main_batch)
 
         new_enemy.vx = -50    
         game_objects.append(new_enemy)

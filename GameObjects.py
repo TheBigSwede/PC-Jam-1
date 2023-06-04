@@ -70,7 +70,7 @@ class Player(PhysicsObject):
 
         self.key_handler = key.KeyStateHandler()
 
-        self.collides_with = [Enemy]
+        self.collides_with = [Enemy,TrackingEnemy]
 
         self.energy = 100
         self.bullet_cost = 10
@@ -175,3 +175,56 @@ class Bullet(PhysicsObject):
             self.dead = True
         if self.y > max_y:
             self.dead = True
+
+class TrackingEnemy(Enemy):
+
+    def __init__(self, target=None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.vx = -50
+        self.walk_speed = 50
+        self.charge_speed = 200
+
+        self.target = target
+        self.tracking_strength = 1.0
+
+    def track_player(self, target):
+        target_direction_x = target.x - self.x
+        target_direction_y = target.y - self.y
+        target_distance = math.sqrt(target_direction_x**2+target_direction_y**2)
+        target_direction_x /= target_distance
+        target_direction_y /= target_distance
+
+        return target_direction_x, target_direction_y, target_distance
+
+    def update(self,dt,objects):
+        self.vx -= 0.1
+
+        if self.target is not None:
+            player_direction_x, player_direction_y, player_distance = self.track_player(self.target)
+
+            if player_distance < 150:
+                self.vx = self.charge_speed*player_direction_x
+                self.vy = self.charge_speed*player_direction_y
+                self.target=None
+            else:
+                self.vx += self.tracking_strength*player_direction_x
+                self.vy += self.tracking_strength*player_direction_y
+        
+        v = math.sqrt(self.vx**2 + self.vy**2)
+        if self.target is not None:
+            if v > self.walk_speed:
+                self.vx = self.walk_speed*self.vx/v
+                self.vy = self.walk_speed*self.vy/v
+        else:
+            if v > self.charge_speed:
+                self.vx = self.charge_speed*self.vx/v
+                self.vy = self.charge_speed*self.vy/v
+
+        self.x += self.vx*dt
+        self.y += self.vy*dt
+
+        self.check_bounds()
+        self.check_collisions(objects)
+        self.check_death()
+        self.colliding_with = []
