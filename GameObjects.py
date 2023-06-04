@@ -81,7 +81,8 @@ class Player(PhysicsObject):
             self.energy -= self.bullet_cost
 
             bullet = Bullet(x=self.x,y=self.y,batch=self.batch)
-            bullet.vx = 500
+            bullet.vy = self.vy
+            bullet.vx = 500 + self.vx
             self.new_objects.append(bullet) 
 
     def update(self, dt, objects):
