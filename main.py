@@ -16,6 +16,9 @@ main_batch = pyglet.graphics.Batch()
 score = 0
 score_label = pyglet.text.Label(text="Score: " + str(score),x=10,y=575,batch=main_batch)
 
+#Game Over Label
+game_over_label = pyglet.text.Label(text="GAME OVER", x=400, y=300, anchor_x='center', font_size=48, batch=None)
+
 #Create Player
 player = Player(x=400,y=300,batch=main_batch)
 
@@ -55,6 +58,12 @@ def update(dt):
             game_objects.remove(obj)
 
     game_objects.extend(objects_to_add)
+
+    #Check lose condition
+    if player not in game_objects:
+        game_over_label.batch = main_batch
+        pyglet.clock.unschedule(update)
+        pyglet.clock.unschedule(spawn_enemy)
 
             
 
