@@ -25,6 +25,10 @@ player = Player(x=400,y=300,batch=main_batch)
 game_window.push_handlers(player)
 game_window.push_handlers(player.key_handler)
 
+#Create Background
+background = pyglet.sprite.Sprite(img=background_image,x=game_window.size[0]//2,y=game_window.size[1]//2)
+background.scale = 0.75
+
 #Create object list
 game_objects = [player]
 
@@ -36,6 +40,7 @@ game_objects = [player]
 @game_window.event
 def on_draw():
     game_window.clear()
+    background.draw()
     score_label.draw()
     main_batch.draw()
 
