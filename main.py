@@ -32,6 +32,17 @@ background.scale = 0.75
 #Create object list
 game_objects = [player]
 
+#Create BGM Player
+BGM_player = pyglet.media.Player()
+BGM_player.queue(BGM_1)
+BGM_player.queue(BGM_2)
+
+@BGM_player.event
+def on_player_eos():
+    BGM_player.queue(BGM_1)
+    BGM_player.queue(BGM_2)
+    BGM_player.play()
+
 
 #%%
 
@@ -87,6 +98,7 @@ def spawn_enemy(dt):
 
 
 if __name__ == '__main__':
+    BGM_player.play()
     pyglet.clock.schedule_interval(update,1/60.0)
     pyglet.clock.schedule_interval(spawn_enemy,0.05)
     pyglet.app.run()

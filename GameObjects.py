@@ -19,6 +19,7 @@ class PhysicsObject(pyglet.sprite.Sprite):
         self.collides_with = []
 
         self.dead = False
+        self.death_sound = None
 
         self.new_objects = []
 
@@ -55,6 +56,8 @@ class PhysicsObject(pyglet.sprite.Sprite):
                 self.dead = True
                 if isinstance(obj,Bullet):
                     self.died_to_bullet = True
+                if self.death_sound is not None:
+                    self.death_sound.play()
 
     def update(self,dt,objects):
         self.x += self.vx*dt
@@ -89,6 +92,8 @@ class Player(PhysicsObject):
             bullet.vy = self.vy
             bullet.vx = 500 + self.vx
             self.new_objects.append(bullet) 
+
+            shooting_sfx.play()
 
     def update(self, dt, objects):
 
@@ -138,6 +143,8 @@ class Enemy(PhysicsObject):
         self.radius = 25
 
         self.collides_with = [Bullet]
+
+        self.death_sound = explosion_sfx
 
 
     def check_bounds(self):

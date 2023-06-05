@@ -7,15 +7,16 @@ import sys
 if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
     os.chdir(sys._MEIPASS)
 
-pyglet.resource.path = ['sprites']
+pyglet.resource.path = ['sprites','sfx','bgm']
 pyglet.resource.reindex()
 
-def resource_path(relative_path):
-    """ Get absolute path to resource, works for dev and for PyInstaller """
-    if hasattr(sys, '_MEIPASS'):
-        return os.path.join(sys._MEIPASS, relative_path)
+#Load BGM
+BGM_1 = pyglet.resource.media('Harmful or Fatal.mp3')
+BGM_2 = pyglet.resource.media('In a Heartbeat.mp3')
 
-    return os.path.join(os.path.abspath("."), relative_path)
+#Load SFX
+explosion_sfx = pyglet.resource.media('435413__v-ktor__explosion12.wav',streaming=False)
+shooting_sfx = pyglet.resource.media('584196__unfa__weapons-plasma-shot-04.flac',streaming=False)
 
 #Load Sprites
 player_image = pyglet.resource.image("Nasa_Sprite.png")
