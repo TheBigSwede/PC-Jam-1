@@ -2,3 +2,5 @@ __pycache__
 dist
 build
 main.spec
+old
+node_modules
