@@ -33,7 +33,7 @@ player.position.z = 0.01;
 scene.add(player);
 
 
-//Create Background
+/* //Create Background
 const backgroundTexture = textureLoader.load( 'sprites/background.png',
 function(texture) {
     background.scale.set(texture.image.width, texture.image.height, 1);
@@ -42,7 +42,7 @@ function(texture) {
 const backgroundMaterial = new THREE.SpriteMaterial({map:backgroundTexture});
 const background = new THREE.Sprite(backgroundMaterial);
 background.position.z = -0.01;
-scene.add(background);
+scene.add(background); */
 
 
 //Create object list
@@ -130,11 +130,11 @@ async function animate() {
     game_objects.forEach(function(object){
         object.update(16);
 
-        objects_to_add.concat(object.objects_to_add);
+        objects_to_add = objects_to_add.concat(object.objects_to_add);
         object.new_objects = [];
     })
 
-    game_objects.concat(objects_to_add);
+    game_objects = game_objects.concat(objects_to_add);
     console.log(game_objects);
     renderer.render(scene, camera);
 
