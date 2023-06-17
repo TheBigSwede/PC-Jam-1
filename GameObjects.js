@@ -100,7 +100,7 @@ export class Player extends PhysicsObject{
 
         this.radius = 16;
         this.max_speed = 0.25;
-        this.acceleration = 0.005;
+        this.acceleration = 0.0005;
 
         this.key_handler = new KeyboardState();
         this.key_handler.push_handler(this);
@@ -113,7 +113,7 @@ export class Player extends PhysicsObject{
 
 
         this.bullet_cost = 10;
-        this.bullet_speed = 0.65;
+        this.bullet_speed = 0.3;
 
         this.new_objects = [];
 
@@ -153,8 +153,8 @@ export class Player extends PhysicsObject{
 
         this.energy_label.textContent = "Energy: "+Math.ceil(this.energy);
 
-        this.vx *= 0.9;
-        this.vy *= 0.9;
+        this.vx *= 0.95;
+        this.vy *= 0.95;
 
         if (this.key_handler.isKeyPressed('KeyW')){
             this.vy += dt*this.acceleration;
@@ -228,6 +228,8 @@ export class Enemy extends PhysicsObject{
 
         this.radius = 20;
 
+        this.vx = -0.04;
+
         this.collides_with = [Bullet];
 
         this.death_sound = new Howl({
@@ -247,14 +249,16 @@ export class Enemy extends PhysicsObject{
             this.dead = true;
         }
         if (this.position.y < min_y){
-            this.position.y = min_y;
+            this.dead = true;
         }
         if (this.position.x > max_x){
             this.position.x = max_x;
         }
         if (this.position.y > max_y){
-            this.position.y = max_y;
+            this.dead = true;
         }
+
+        super.check_bounds();
     }
 }
 
@@ -271,8 +275,8 @@ export class TrackingEnemy extends Enemy{
         this.target = null;
         this.tracking_strength = 1.0
 
-        this.walk_speed = 0.1
-        this.charge_speed = 0.2
+        this.walk_speed = 0.05
+        this.charge_speed = 0.15
     }
 
     track_player(target) {
@@ -286,23 +290,14 @@ export class TrackingEnemy extends Enemy{
     }
 
 
-    check_bounds(){
-        var min_x = this.radius-window.innerWidth/2;
 
-
-        if (this.position.x < min_x){
-            this.dead = true;
-        }
-        
-        super.check_bounds();
-    }
 
     update(dt,objects) {
-        this.vx -= 0.01
+        this.vx -= 0.001
 
         if (this.target !== null) {
             var [player_direction_x, player_direction_y, player_distance] = this.track_player(this.target)
-            if (player_distance < 50) {
+            if (player_distance < 150) {
                 this.vx = this.charge_speed*player_direction_x
                 this.vy = this.charge_speed*player_direction_y
                 this.target=null
