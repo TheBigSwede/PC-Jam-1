@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import { KeyboardState } from './KeyHandler';
-import { loadObject } from './LoadingHandler';
+import { KeyboardState } from '/KeyHandler';
+import { loadObject } from '/LoadingHandler';
 
 export class PhysicsObject extends THREE.Sprite {
 
@@ -118,11 +118,11 @@ export class Player extends PhysicsObject{
         this.new_objects = [];
 
         this.bullet_sound = new Howl({
-            src: ['sfx/584196__unfa__weapons-plasma-shot-04.flac']
+            src: ['/sfx/584196__unfa__weapons-plasma-shot-04.flac']
         });
 
         this.death_sound = new Howl({
-            src: ['sfx/435413__v-ktor__explosion12.wav']
+            src: ['/sfx/435413__v-ktor__explosion12.wav']
         })
     }
 
@@ -132,7 +132,7 @@ export class Player extends PhysicsObject{
             this.energy -= this.bullet_cost;
             
 
-            const bullet = await loadObject('sprites/Nasa_Bullet_Sprite.png', Bullet);
+            const bullet = await loadObject('/sprites/Nasa_Bullet_Sprite.png', Bullet);
             bullet.vy = this.vy;
             bullet.vx = this.bullet_speed + this.vx;
             bullet.position.x = this.position.x;
@@ -231,7 +231,7 @@ export class Enemy extends PhysicsObject{
         this.collides_with = [Bullet];
 
         this.death_sound = new Howl({
-            src: ['sfx/435413__v-ktor__explosion12.wav']
+            src: ['/sfx/435413__v-ktor__explosion12.wav']
         });
     };
     
