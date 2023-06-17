@@ -7,6 +7,18 @@ import {loadObject} from './LoadingHandler'
 //Create the scene
 const scene = new THREE.Scene();
 const camera = new THREE.OrthographicCamera(-window.innerWidth/2, window.innerWidth/2, window.innerHeight/2, -window.innerHeight/2, -1, 1);
+
+const listener = new THREE.AudioListener();
+const sound = new THREE.Audio(listener);
+const audioloader = new THREE.AudioLoader();
+audioloader.load('bgm/Harmful or Fatal.mp3', (buffer) => {
+    sound.setBuffer(buffer);
+    sound.setLoop(true);
+    sound.setVolume(0.5);
+    sound.play();
+})
+
+
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
