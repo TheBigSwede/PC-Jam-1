@@ -80,12 +80,14 @@ def update(dt):
 
 async function spawn_enemy() {
     if (Math.random() > 1/(1.05+score/50000)) {
+        var new_enemy;
         var x_coord = window.innerWidth-50;
-        var y_coord = (Math.random()*window.innerHeight-100)+50;
+        var y_coord = (Math.random()*window.innerHeight-200)+100;
         if (Math.random() < 0.1) {
             //new_enemy = TrackingEnemy(target=player,x=x_coord,y=y_coord,batch=main_batch);
+            return;
         } else {
-            var new_enemy = await loadObject('sprites/Zombie_Capipi.png', Enemy);
+            new_enemy = await loadObject('sprites/Zombie_Capipi.png', Enemy);
         }
     
 
@@ -114,7 +116,9 @@ async function animate() {
     requestAnimationFrame(animate);
     
     scene.children.forEach((object) => {
-        object.update?.(16);
+        object.update?.(16,scene.children.filter((other_object) => {
+            return other_object != object;
+        }));
 
 
 

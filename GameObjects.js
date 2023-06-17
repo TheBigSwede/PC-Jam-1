@@ -26,7 +26,7 @@ export class PhysicsObject extends THREE.Sprite {
     }
 
     calculate_distance(obj){
-        return Math.sqrt((this.x-obj.x)**2 + (this.y-obj.y)**2);
+        return Math.sqrt((this.position.x-obj.position.x)**2 + (this.position.y-obj.position.y)**2);
 
     }
 
@@ -51,17 +51,18 @@ export class PhysicsObject extends THREE.Sprite {
     }
 
     check_collisions(objects){
-        for (obj in objects){
+        objects.forEach(obj => {
             if (this.calculate_distance(obj) <= this.radius+obj.radius){
-                this.colliding_with.append(obj);
-                obj.colliding_with.append(this);
-            }
-        }
+                this.colliding_with.push(obj);
+                obj.colliding_with.push(this);
+            }            
+        });
     }
 
     check_death(){
-        for (obj in this.colliding_with){
-            if (type(obj) in this.collides_with){
+        this.colliding_with.forEach((obj) => {
+            if (this.collides_with.includes(obj.constructor)){
+                console.log('collision')
                 this.dead = true;
                 if (obj instanceof Bullet){
                     this.died_to_bullet = true;
@@ -70,7 +71,7 @@ export class PhysicsObject extends THREE.Sprite {
                     this.death_sound.play();
                 }
             }
-        }
+        });
     }
 
     update(dt,objects){
@@ -92,14 +93,14 @@ export class Player extends PhysicsObject{
 
         this.position.z = 0.01;
 
-        this.radius = 1;
+        this.radius = 16;
         this.max_speed = 0.4;
         this.acceleration = 0.005;
 
         this.key_handler = new KeyboardState();
         this.key_handler.push_handler(this);
 
-        this.collides_with = [];
+        this.collides_with = [Enemy];
 
         this.energy = 100;
         this.bullet_cost = 10;
@@ -173,9 +174,9 @@ export class Bullet extends PhysicsObject{
     constructor(bullet_image){
         super(bullet_image);
 
-        this.radius = 1;
+        this.radius = 8;
 
-        this.collides_with = [];
+        this.collides_with = [Enemy];
     }
 
     check_bounds(){
@@ -203,7 +204,7 @@ export class Enemy extends PhysicsObject{
     constructor(enemy_image){
         super(enemy_image);
 
-        this.radius = 1;
+        this.radius = 20;
 
         this.collides_with = [Bullet];
 
