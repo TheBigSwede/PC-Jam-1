@@ -54,7 +54,6 @@ async function wait_for_key() {
     })
  }
 
- console.log('waiting for space');
  await wait_for_key();
  start_label.textContent = ""
 
@@ -144,7 +143,7 @@ async function spawn_enemy() {
         }
     
 
-        new_enemy.vx = -0.1;
+        
         new_enemy.position.x = x_coord;
         new_enemy.position.y = y_coord;
         scene.add(new_enemy);
@@ -159,7 +158,7 @@ function sleep(ms) {
 
 const startTime = performance.now();
 
-var enemySpawner = setInterval(spawn_enemy, 100);
+var enemySpawner = setInterval(spawn_enemy, 50);
 
 var now = startTime;
 var elapsed;
@@ -173,7 +172,7 @@ async function animate() {
     requestAnimationFrame(animate);
     
     scene.children.forEach((object) => {
-        object.update?.(16,scene.children.filter((other_object) => {
+        object.update?.(33.33,scene.children.filter((other_object) => {
             return other_object != object;
         }));
 
@@ -207,7 +206,7 @@ async function animate() {
 
 
     elapsed = performance.now() - now;
-    await sleep(16-elapsed)
+    await sleep(33.33-elapsed)
 
 }
 animate();
