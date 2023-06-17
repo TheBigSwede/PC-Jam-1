@@ -116,6 +116,10 @@ export class Player extends PhysicsObject{
         this.bullet_speed = 0.65;
 
         this.new_objects = [];
+
+        this.bullet_sound = new Howl({
+            src: ['sfx/584196__unfa__weapons-plasma-shot-04.flac']
+        });
     }
 
 
@@ -131,7 +135,7 @@ export class Player extends PhysicsObject{
             bullet.position.y = this.position.y;
             this.new_objects.push(bullet);
 
-            //shooting_sfx.play();
+            this.bullet_sound.play();
         }
     }
 
@@ -173,7 +177,9 @@ export class Player extends PhysicsObject{
 
     onKeyDown(event){
         if (event.code === 'Space'){
-            this.fire_bullet();
+            if (this.dead === false) {
+                this.fire_bullet();
+            }
         }
     }
     onKeyUp(event){
@@ -220,8 +226,11 @@ export class Enemy extends PhysicsObject{
 
         this.collides_with = [Bullet];
 
-        this.death_sound = null;
-    }
+        this.death_sound = new Howl({
+            src: ['sfx/435413__v-ktor__explosion12.wav']
+        });
+    };
+    
 
 
     check_bounds(){

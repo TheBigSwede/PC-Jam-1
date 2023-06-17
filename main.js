@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import {Howl, Howler} from 'howler';
 
 
 import {PhysicsObject, Player, Enemy, TrackingEnemy} from './GameObjects'
@@ -8,15 +9,25 @@ import {loadObject} from './LoadingHandler'
 const scene = new THREE.Scene();
 const camera = new THREE.OrthographicCamera(-window.innerWidth/2, window.innerWidth/2, window.innerHeight/2, -window.innerHeight/2, -1, 1);
 
-const listener = new THREE.AudioListener();
+/* const listener = new THREE.AudioListener();
 const sound = new THREE.Audio(listener);
 const audioloader = new THREE.AudioLoader();
-audioloader.load('bgm/Harmful or Fatal.mp3', (buffer) => {
+audioloader.load('bgm/Rhinoceros.mp3', (buffer) => {
     sound.setBuffer(buffer);
     sound.setLoop(true);
-    sound.setVolume(0.5);
+    sound.setVolume(0.4);
     sound.play();
-})
+}) */
+
+var BGM = new Howl({
+    src: ['bgm/Rhinoceros.mp3'],
+    html5: true,
+    loop: true,
+    volume: 0.75,
+});
+
+BGM.play()
+  
 
 
 const renderer = new THREE.WebGLRenderer();
