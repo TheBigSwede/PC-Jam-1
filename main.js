@@ -2,8 +2,8 @@ import * as THREE from 'three';
 import {Howl, Howler} from 'howler';
 
 
-import {PhysicsObject, Player, Enemy, TrackingEnemy} from '/GameObjects'
-import {loadObject} from '/LoadingHandler'
+import {PhysicsObject, Player, Enemy, TrackingEnemy} from './GameObjects'
+import {loadObject} from './LoadingHandler'
 
 //Create the scene
 const scene = new THREE.Scene();
@@ -29,7 +29,7 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
 //Create Background
-const background = await loadObject('./sprites/background.png',THREE.Sprite);
+const background = await loadObject('sprites/background.png',THREE.Sprite);
 scene.add(background);
 
 //Render Start Screen
@@ -69,13 +69,13 @@ var game_over_label = document.getElementById("game_over");
 
 //Create Player
 
-const player = await loadObject('/sprites/Nasa_Sprite.png',Player);
+const player = await loadObject('sprites/Nasa_Sprite.png',Player);
 scene.add(player);
 
 
 //Start BGM
 var BGM = new Howl({
-    src: ['/bgm/Rhinoceros.mp3'],
+    src: ['bgm/Rhinoceros.mp3'],
     html5: true,
     loop: true,
     volume: 0.75,
@@ -137,10 +137,10 @@ async function spawn_enemy() {
         var x_coord = window.innerWidth/2-10;
         var y_coord = ((2*Math.random()-1)*window.innerHeight/2-100)+50;
         if (Math.random() < 0.1) {
-            new_enemy = await loadObject('/sprites/Zombie_Capipi.png', TrackingEnemy);
+            new_enemy = await loadObject('sprites/Zombie_Capipi.png', TrackingEnemy);
             new_enemy.target = player;
         } else {
-            new_enemy = await loadObject('/sprites/Zombie_Capipi.png', Enemy);
+            new_enemy = await loadObject('sprites/Zombie_Capipi.png', Enemy);
         }
     
 
