@@ -19,20 +19,45 @@ audioloader.load('bgm/Rhinoceros.mp3', (buffer) => {
     sound.play();
 }) */
 
-var BGM = new Howl({
-    src: ['bgm/Rhinoceros.mp3'],
-    html5: true,
-    loop: true,
-    volume: 0.75,
-});
 
-BGM.play()
-  
+
+
 
 
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
+
+//Create Background
+const background = await loadObject('sprites/background.png',THREE.Sprite);
+scene.add(background);
+
+//Render Start Screen
+renderer.render(scene, camera);
+const start_label = document.getElementById("start_message");
+start_label.textContent = "A virulent strain of mold has turned the capipis into undead 'floaters.' Smite these foul creatures before they invade Earth. \r\n \r\n Press SPACE to start."
+
+//Wait for user the press play
+async function wait_for_key() {
+    await keypress();
+ }
+
+ function keypress() {
+    return new Promise((resolve) => {
+        window.addEventListener('keydown', onKeyHandler);
+        function onKeyHandler(key) {
+            if (key.code === 'Space') {
+                window.removeEventListener('keydown', onKeyHandler);
+                resolve();
+            }
+        }
+    })
+ }
+
+ console.log('waiting for space');
+ await wait_for_key();
+ start_label.textContent = ""
+
 
 //Score Label
 var score = 0;
@@ -42,18 +67,23 @@ score_label.textContent = "Score: "+score;
 //Game Over Label
 var game_over_label = document.getElementById("game_over");
 
-
 //Create Player
 
 const player = await loadObject('sprites/Nasa_Sprite.png',Player);
 scene.add(player);
 
 
+//Start BGM
+var BGM = new Howl({
+    src: ['bgm/Rhinoceros.mp3'],
+    html5: true,
+    loop: true,
+    volume: 0.75,
+});
+  
+BGM.play();
 
 
-//Create Background
-const background = await loadObject('sprites/background.png',THREE.Sprite);
-scene.add(background);
 
 
 
@@ -121,13 +151,16 @@ async function spawn_enemy() {
     }
 }
 
-var enemySpawner = setInterval(spawn_enemy, 100);
-
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
  }
 
+
+
 const startTime = performance.now();
+
+var enemySpawner = setInterval(spawn_enemy, 100);
+
 var now = startTime;
 var elapsed;
 var player_dead = false;
@@ -161,7 +194,7 @@ async function animate() {
             if (object instanceof Player) {
                 player_dead = true;
                 clearInterval(enemySpawner);
-                game_over_label.textContent = "GAME OVER"
+                game_over_label.textContent = "GAME OVER \n\r \n\r Refresh the page to restart."
             }
         }
     })

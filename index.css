@@ -27,4 +27,18 @@
 	z-index: 100;
 	display: block;
 	color: white;
+	white-space: pre-line;
+	text-align: center;
+}
+
+#start_message {	
+	position: absolute;
+	transform: translate(-50%, -50%);
+	top: 50%;
+	left: 50%;
+	z-index: 100;
+	display: block;
+	color: white;
+	text-align: center;
+	white-space: pre-line;
 }

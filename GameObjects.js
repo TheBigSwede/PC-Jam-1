@@ -120,6 +120,10 @@ export class Player extends PhysicsObject{
         this.bullet_sound = new Howl({
             src: ['sfx/584196__unfa__weapons-plasma-shot-04.flac']
         });
+
+        this.death_sound = new Howl({
+            src: ['sfx/435413__v-ktor__explosion12.wav']
+        })
     }
 
 
