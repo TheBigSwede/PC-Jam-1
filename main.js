@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
 
-import {PhysicsObject, Player, Enemy} from './GameObjects'
+import {PhysicsObject, Player, Enemy, TrackingEnemy} from './GameObjects'
 import {loadObject} from './LoadingHandler'
 
 //Create the scene
@@ -14,7 +14,7 @@ document.body.appendChild(renderer.domElement);
 //Score Label
 var score = 0;
 var score_label = document.getElementById("score");
-score_label.textContent = score;
+score_label.textContent = "Score: "+score;
 
 //Game Over Label
 var game_over_label = document.getElementById("game_over");
@@ -81,11 +81,11 @@ def update(dt):
 async function spawn_enemy() {
     if (Math.random() > 1/(1.05+score/50000)) {
         var new_enemy;
-        var x_coord = window.innerWidth-50;
-        var y_coord = (Math.random()*window.innerHeight-200)+100;
+        var x_coord = window.innerWidth/2-10;
+        var y_coord = ((2*Math.random()-1)*window.innerHeight/2-100)+50;
         if (Math.random() < 0.1) {
-            //new_enemy = TrackingEnemy(target=player,x=x_coord,y=y_coord,batch=main_batch);
-            return;
+            new_enemy = await loadObject('sprites/Zombie_Capipi.png', TrackingEnemy);
+            new_enemy.target = player;
         } else {
             new_enemy = await loadObject('sprites/Zombie_Capipi.png', Enemy);
         }
@@ -98,7 +98,7 @@ async function spawn_enemy() {
     }
 }
 
-let enemySpawner = setInterval(spawn_enemy, 100);
+var enemySpawner = setInterval(spawn_enemy, 100);
 
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -107,6 +107,7 @@ function sleep(ms) {
 const startTime = performance.now();
 var now = startTime;
 var elapsed;
+var player_dead = false;
 
 async function animate() {
     now = performance.now();   
@@ -130,6 +131,15 @@ async function animate() {
 
         if (object?.dead === true) {
             scene.remove(object);
+            if (object instanceof Enemy && object.died_to_bullet) {
+                score += 100;
+                score_label.textContent = "Score: "+score;
+            }
+            if (object instanceof Player) {
+                player_dead = true;
+                clearInterval(enemySpawner);
+                game_over_label.textContent = "GAME OVER"
+            }
         }
     })
 

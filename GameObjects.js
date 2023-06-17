@@ -38,15 +38,19 @@ export class PhysicsObject extends THREE.Sprite {
 
         if (this.position.x < min_x){
             this.position.x = min_x;
+            this.vx = 0;
         }
         if (this.position.y < min_y){
             this.position.y = min_y;
+            this.vy = 0;
         }
         if (this.position.x > max_x){
             this.position.x = max_x;
+            this.vx = 0;
         }
         if (this.position.y > max_y){
             this.position.y = max_y;
+            this.vy = 0;
         }
     }
 
@@ -61,16 +65,17 @@ export class PhysicsObject extends THREE.Sprite {
 
     check_death(){
         this.colliding_with.forEach((obj) => {
-            if (this.collides_with.includes(obj.constructor)){
-                console.log('collision')
-                this.dead = true;
-                if (obj instanceof Bullet){
-                    this.died_to_bullet = true;
+            this.collides_with.forEach((collision_target) => {
+                if (obj instanceof collision_target) {
+                    this.dead = true;
+                    if (obj instanceof Bullet){
+                        this.died_to_bullet = true;
+                    }
+                    if (this.death_sound !== null){
+                        this.death_sound.play();
+                    }
                 }
-                if (this.death_sound !== null){
-                    this.death_sound.play();
-                }
-            }
+            });            
         });
     }
 
@@ -94,7 +99,7 @@ export class Player extends PhysicsObject{
         this.position.z = 0.01;
 
         this.radius = 16;
-        this.max_speed = 0.4;
+        this.max_speed = 0.25;
         this.acceleration = 0.005;
 
         this.key_handler = new KeyboardState();
@@ -103,6 +108,10 @@ export class Player extends PhysicsObject{
         this.collides_with = [Enemy];
 
         this.energy = 100;
+        this.energy_label = document.getElementById("energy");
+        this.energy_label.textContent = "Energy: "+Math.ceil(this.energy);
+
+
         this.bullet_cost = 10;
         this.bullet_speed = 0.65;
 
@@ -113,6 +122,7 @@ export class Player extends PhysicsObject{
     async fire_bullet(){
         if (this.energy > this.bullet_cost){
             this.energy -= this.bullet_cost;
+            
 
             const bullet = await loadObject('sprites/Nasa_Bullet_Sprite.png', Bullet);
             bullet.vy = this.vy;
@@ -132,6 +142,8 @@ export class Player extends PhysicsObject{
         if (this.energy > 100){
             this.energy = 100;
         }
+
+        this.energy_label.textContent = "Energy: "+Math.ceil(this.energy);
 
         this.vx *= 0.9;
         this.vy *= 0.9;
@@ -232,4 +244,79 @@ export class Enemy extends PhysicsObject{
         }
     }
 }
+
+export class TrackingEnemy extends Enemy{
+    constructor(enemy_image){
+        super(enemy_image);
+
+        this.radius = 20;
+
+        this.collides_with = [Bullet];
+
+        this.death_sound = null;
+
+        this.target = null;
+        this.tracking_strength = 1.0
+
+        this.walk_speed = 0.1
+        this.charge_speed = 0.2
+    }
+
+    track_player(target) {
+        var target_direction_x = target.position.x - this.position.x
+        var target_direction_y = target.position.y - this.position.y
+        var target_distance = Math.sqrt(target_direction_x**2+target_direction_y**2)
+        target_direction_x /= target_distance
+        target_direction_y /= target_distance
+
+        return [target_direction_x, target_direction_y, target_distance]
+    }
+
+
+    check_bounds(){
+        var min_x = this.radius-window.innerWidth/2;
+
+
+        if (this.position.x < min_x){
+            this.dead = true;
+        }
+        
+        super.check_bounds();
+    }
+
+    update(dt,objects) {
+        this.vx -= 0.01
+
+        if (this.target !== null) {
+            var [player_direction_x, player_direction_y, player_distance] = this.track_player(this.target)
+            if (player_distance < 50) {
+                this.vx = this.charge_speed*player_direction_x
+                this.vy = this.charge_speed*player_direction_y
+                this.target=null
+            } else {
+                this.vx += this.tracking_strength*player_direction_x
+                this.vy += this.tracking_strength*player_direction_y
+            }
+        }
+        
+        var v = Math.sqrt(this.vx**2 + this.vy**2)
+        if (this.target !== null) {
+            if (v > this.walk_speed) {
+                this.vx = this.walk_speed*this.vx/v
+                this.vy = this.walk_speed*this.vy/v
+            }
+        } else {
+            if (v > this.charge_speed) {
+                this.vx = this.charge_speed*this.vx/v
+                this.vy = this.charge_speed*this.vy/v
+            }
+        }
+
+        super.update(dt,objects)
+    }
+}
+
+
+
+
 

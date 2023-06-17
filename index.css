@@ -7,3 +7,24 @@
 	display:block;
     color: white;
 }
+
+#energy {
+	position:absolute;
+	bottom: 10px;
+	left: 10px;
+	width: 100%;
+	text-align: left;
+	z-index: 100;
+	display: block;
+	color: white;
+}
+
+#game_over {
+	position: absolute;
+	transform: translate(-50%, -50%);
+	top: 50%;
+	left: 50%;
+	z-index: 100;
+	display: block;
+	color: white;
+}
