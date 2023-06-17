@@ -29,7 +29,7 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
 //Create Background
-const background = await loadObject('/sprites/background.png',THREE.Sprite);
+const background = await loadObject('sprites/background.png',THREE.Sprite);
 scene.add(background);
 
 //Render Start Screen
