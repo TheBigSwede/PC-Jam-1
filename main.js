@@ -1,7 +1,8 @@
 import * as THREE from 'three';
 
 
-import {PhysicsObject, Player} from './GameObjects'
+import {PhysicsObject, Player, Enemy} from './GameObjects'
+import {loadObject} from './LoadingHandler'
 
 //Create the scene
 const scene = new THREE.Scene();
@@ -16,37 +17,23 @@ var score_label = document.getElementById("score");
 score_label.textContent = score;
 
 //Game Over Label
-var game_over_label = document.getElementById("game_over")
+var game_over_label = document.getElementById("game_over");
 
-//Start texture loader
-const textureLoader = new THREE.TextureLoader();
 
 //Create Player
-const playerTexture = textureLoader.load( 'sprites/Nasa_Sprite.png',
-function(texture) {
-    player.scale.set(texture.image.width, texture.image.height, 1);
-}
-);
-const playerMaterial = new THREE.SpriteMaterial({ map: playerTexture });
-const player = new Player(playerMaterial);
-player.position.z = 0.01;
+
+const player = await loadObject('sprites/Nasa_Sprite.png',Player);
 scene.add(player);
 
 
-/* //Create Background
-const backgroundTexture = textureLoader.load( 'sprites/background.png',
-function(texture) {
-    background.scale.set(texture.image.width, texture.image.height, 1);
-}
-);
-const backgroundMaterial = new THREE.SpriteMaterial({map:backgroundTexture});
-const background = new THREE.Sprite(backgroundMaterial);
-background.position.z = -0.01;
-scene.add(background); */
 
 
-//Create object list
-var game_objects = [player]
+//Create Background
+const background = await loadObject('sprites/background.png',THREE.Sprite);
+scene.add(background);
+
+
+
 /*
 #Create BGM Player
 BGM_player = pyglet.media.Player()
@@ -89,27 +76,29 @@ def update(dt):
         pyglet.clock.unschedule(update)
         pyglet.clock.unschedule(spawn_enemy)
 
-            
+*/            
 
-def spawn_enemy(dt):
-    global score
-    if random.random() > 1/(1.05+score/50000):
-        x_coord = game_window.size[0]-50
-        y_coord = random.random()*(game_window.size[1]-100)+50
-        if random.random() < 0.1:
-            new_enemy = TrackingEnemy(target=player,x=x_coord,y=y_coord,batch=main_batch)
-        else:
-            new_enemy = Enemy(x=x_coord,y=y_coord,batch=main_batch)
-
-        new_enemy.vx = -100    
-        game_objects.append(new_enemy)
-
-
+async function spawn_enemy() {
+    //if (Math.random() > 1/(1.05+score/50000)) {
+    if (true) {
+        var x_coord = window.innerWidth-50;
+        var y_coord = (Math.random()*window.innerHeight-100)+50;
+        if (Math.random() < 0.1) {
+            //new_enemy = TrackingEnemy(target=player,x=x_coord,y=y_coord,batch=main_batch);
+            var new_enemy = await loadObject('sprites/enemy.png', Enemy);
+        } else {
+            var new_enemy = await loadObject('sprites/enemy.png', Enemy);
+        }
     
 
+        new_enemy.vx = -0.1;
+        new_enemy.position.x = x_coord;
+        new_enemy.position.y = y_coord;
+        scene.add(new_enemy)
+    }
+}
 
-# %%
- */
+let enemySpawner = setInterval(spawn_enemy, 100);
 
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -126,16 +115,26 @@ async function animate() {
     var objects_to_add = [];
     requestAnimationFrame(animate);
     
+    scene.children.forEach((object) => {
+        object.update?.(16);
 
-    game_objects.forEach(function(object){
-        object.update(16);
 
-        objects_to_add = objects_to_add.concat(object.objects_to_add);
-        object.new_objects = [];
+
+        if (object?.new_objects !== undefined) {
+            objects_to_add = objects_to_add.concat(object?.new_objects);
+            object.new_objects = [];
+        }
+
+
+        if (object?.dead === true) {
+            scene.remove(object);
+        }
     })
 
-    game_objects = game_objects.concat(objects_to_add);
-    console.log(game_objects);
+    objects_to_add.forEach((object) => {
+        scene.add(object);
+    })
+    
     renderer.render(scene, camera);
 
 
@@ -144,3 +143,5 @@ async function animate() {
 
 }
 animate();
+
+//});

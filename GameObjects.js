@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { KeyboardState } from './KeyHandler';
+import { loadObject } from './LoadingHandler';
 
 export class PhysicsObject extends THREE.Sprite {
 
@@ -61,9 +62,9 @@ export class PhysicsObject extends THREE.Sprite {
     check_death(){
         for (obj in this.colliding_with){
             if (type(obj) in this.collides_with){
-                this.dead = True
+                this.dead = true;
                 if (obj instanceof Bullet){
-                    this.died_to_bullet = True;
+                    this.died_to_bullet = true;
                 }
                 if (this.death_sound !== null){
                     this.death_sound.play();
@@ -89,8 +90,10 @@ export class Player extends PhysicsObject{
     constructor(player_image){
         super(player_image);
 
+        this.position.z = 0.01;
+
         this.radius = 1;
-        this.max_speed = 0.5;
+        this.max_speed = 0.4;
         this.acceleration = 0.005;
 
         this.key_handler = new KeyboardState();
@@ -100,19 +103,21 @@ export class Player extends PhysicsObject{
 
         this.energy = 100;
         this.bullet_cost = 10;
-        this.bullet_speed = 0.01;
+        this.bullet_speed = 0.65;
 
         this.new_objects = [];
     }
 
 
-    fire_bullet(){
+    async fire_bullet(){
         if (this.energy > this.bullet_cost){
             this.energy -= this.bullet_cost;
 
-            const bullet = new Bullet('sprites/bullet.png');
+            const bullet = await loadObject('sprites/Nasa_Bullet_Sprite.png', Bullet);
             bullet.vy = this.vy;
             bullet.vx = this.bullet_speed + this.vx;
+            bullet.position.x = this.position.x;
+            bullet.position.y = this.position.y;
             this.new_objects.push(bullet);
 
             //shooting_sfx.play();
@@ -172,7 +177,58 @@ export class Bullet extends PhysicsObject{
 
         this.collides_with = [];
     }
+
+    check_bounds(){
+        var min_x = this.radius-window.innerWidth/2;
+        var min_y = this.radius-window.innerHeight/2;
+        var max_x = window.innerWidth/2-this.radius;
+        var max_y = window.innerHeight/2-this.radius;
+
+        if (this.position.x < min_x){
+            this.dead = true;
+        }
+        if (this.position.y < min_y){
+            this.dead = true;
+        }
+        if (this.position.x > max_x){
+            this.dead = true;
+        }
+        if (this.position.y > max_y){
+            this.dead = true;
+        }
+    }
 }
 
+export class Enemy extends PhysicsObject{
+    constructor(enemy_image){
+        super(enemy_image);
 
+        this.radius = 1;
+
+        this.collides_with = [Bullet];
+
+        this.death_sound = null;
+    }
+
+
+    check_bounds(){
+        var min_x = this.radius-window.innerWidth/2;
+        var min_y = this.radius-window.innerHeight/2;
+        var max_x = window.innerWidth/2-this.radius;
+        var max_y = window.innerHeight/2-this.radius;
+
+        if (this.position.x < min_x){
+            this.dead = true;
+        }
+        if (this.position.y < min_y){
+            this.position.y = min_y;
+        }
+        if (this.position.x > max_x){
+            this.position.x = max_x;
+        }
+        if (this.position.y > max_y){
+            this.position.y = max_y;
+        }
+    }
+}
 
