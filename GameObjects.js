@@ -270,8 +270,6 @@ export class TrackingEnemy extends Enemy{
 
         this.collides_with = [Bullet];
 
-        this.death_sound = null;
-
         this.target = null;
         this.tracking_strength = 1.0
 
