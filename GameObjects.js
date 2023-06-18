@@ -113,7 +113,7 @@ export class Player extends PhysicsObject{
 
 
         this.bullet_cost = 10;
-        this.bullet_speed = 0.3;
+        this.bullet_speed = 0.35;
 
         this.new_objects = [];
 
