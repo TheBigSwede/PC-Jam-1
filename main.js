@@ -160,6 +160,7 @@ const startTime = performance.now();
 
 var enemySpawner = setInterval(spawn_enemy, 50);
 
+
 var now = startTime;
 var elapsed;
 var player_dead = false;
@@ -169,10 +170,10 @@ async function animate() {
     
     
     var objects_to_add = [];
-    requestAnimationFrame(animate);
+    
     
     scene.children.forEach((object) => {
-        object.update?.(33.33,scene.children.filter((other_object) => {
+        object.update?.(16.67,scene.children.filter((other_object) => {
             return other_object != object;
         }));
 
@@ -193,6 +194,7 @@ async function animate() {
             if (object instanceof Player) {
                 player_dead = true;
                 clearInterval(enemySpawner);
+
                 game_over_label.textContent = "GAME OVER \n\r \n\r Refresh the page to restart."
             }
         }
@@ -206,7 +208,8 @@ async function animate() {
 
 
     elapsed = performance.now() - now;
-    await sleep(33.33-elapsed)
+    await sleep(16.67-elapsed);
+    requestAnimationFrame(animate());
 
 }
 animate();

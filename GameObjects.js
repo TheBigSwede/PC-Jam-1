@@ -99,8 +99,8 @@ export class Player extends PhysicsObject{
         this.position.z = 0.01;
 
         this.radius = 16;
-        this.max_speed = 0.25;
-        this.acceleration = 0.0005;
+        this.max_speed = 0.3;
+        this.acceleration = 0.001;
 
         this.key_handler = new KeyboardState();
         this.key_handler.push_handler(this);
@@ -228,7 +228,7 @@ export class Enemy extends PhysicsObject{
 
         this.radius = 20;
 
-        this.vx = -0.04;
+        this.vx = -0.05;
 
         this.collides_with = [Bullet];
 
@@ -275,8 +275,8 @@ export class TrackingEnemy extends Enemy{
         this.target = null;
         this.tracking_strength = 1.0
 
-        this.walk_speed = 0.05
-        this.charge_speed = 0.15
+        this.walk_speed = 0.1
+        this.charge_speed = 0.2
     }
 
     track_player(target) {
